@@ -1,0 +1,299 @@
+package practica3;
+
+import java.util.Scanner;
+
+public class Repeticion {
+
+  final static int TAMANO = 6;
+  final static char JEDI = 'J';
+  final static char VADER = 'V';
+  final static char SIDIOUS = 'S';
+  final static char MAUL = 'M';
+  final static char VACIO = '_';
+  static boolean armadura;
+  public static void main(String[] args) {
+
+
+
+    char[][] tablero = new char[TAMANO][TAMANO];
+    Scanner teclado = new Scanner(System.in);
+    char movimiento=' ';
+    armadura = true;
+    char tipoEnemigo =' ';
+
+
+    inicializarTablero(tablero);
+
+    emplazarJugadores(tablero);
+
+    do{
+      mostrarTablero(tablero);
+      movimiento = pedirMovimiento(teclado);
+
+      jugadaJedi(tablero, movimiento);
+      jugadaEnemigos(tablero);
+
+
+
+      // realizar movimientos de enemigos
+
+    }while(movimiento !='f');
+
+    mostrarTablero(tablero);
+    teclado.close();
+  }
+
+  private static void jugadaEnemigos(char[][] tablero) {
+
+
+    movimientoEnemigo(tablero,SIDIOUS);
+
+    movimientoEnemigo(tablero, MAUL);
+
+    movimientoEnemigo(tablero,VADER);
+
+    //posicionValida
+
+  }
+  private static void movimientoEnemigo(char[][] tablero, char tipoEnemigo){
+    int posicionI=0, posicionJ=0, movimientoI=0, movimientoJ=0;
+
+    //hacer metodo para poner vacio
+    //hacer metodo de posiconvalida correctamente.
+    //va el calculo del aleatorio en un bucle
+    //llamar a las coordenadas inicializadas arriba porque se las tenemos que pasar a los metodos que llamemos
+
+
+
+    for (int i = 0; i < tablero.length; i++) {
+      for (int j = 0; j < tablero.length; j++) {
+
+        if(tablero[i][j]==tipoEnemigo) {
+          //return i;
+          tablero[i][j]=VACIO;
+          posicionI = i;
+          posicionJ =j;
+
+        }
+      }
+    }
+    do {
+      if(posicionValida(posicionI, posicionJ) ==true) {
+
+
+        int aleatorio = (int)((Math.random()*(4)));
+
+
+
+        switch(aleatorio) {
+
+          case 0:
+
+            if(posicionI!=0) {
+              tablero[posicionI-1][posicionJ] = tipoEnemigo;
+            }
+
+            break;
+          case 1:
+
+            if(posicionJ!=5){
+              tablero[posicionI][posicionJ+1] = tipoEnemigo;
+            }
+            break;
+
+          case 2:
+
+
+            if(posicionI!=5) {
+              tablero[posicionI+1][posicionJ] = tipoEnemigo;
+            }
+
+            break;
+          case 3:
+
+            if(posicionJ!=0) {
+              tablero[posicionI][posicionJ-1] = tipoEnemigo;
+            }
+        }
+
+
+      }
+
+
+
+    }while(hayEnemigo(tablero, tipoEnemigo, posicionI, posicionJ)==false);
+
+  }
+
+
+  private static boolean hayEnemigo(char[][] tablero, char tipoEnemigo, int x, int y) {
+
+
+    for (int i = 0; i < tablero.length; i++) {
+      for (int j = 0; j < tablero.length; j++) {
+        if(tablero[i][j]==tipoEnemigo) {
+          x =i;
+          y=j;
+          return true;
+        }
+      }
+    }
+
+
+
+
+    return false;
+
+
+  }
+  private static char pedirMovimiento(Scanner teclado) {
+
+    char movimiento;
+    System.out.println("Introduce el movimiento del Jedi (a, w, d, s)");
+    movimiento = teclado.nextLine().toLowerCase().charAt(0);
+
+    if(movimiento !='a' && movimiento != 'w' && movimiento !='d' && movimiento !='s') {
+      do {
+
+
+        System.out.println("Introduce el movimiento del Jedi CORRECTAMENTE (a, w, d, s)");
+        movimiento = teclado.nextLine().charAt(0);
+
+      }while(movimiento != 'a'&& movimiento != 'w'&& movimiento !='d'&& movimiento !='s');
+
+
+    }
+    return movimiento;
+  }
+
+  private static void mostrarTablero(char[][] tablero) {
+    for (int i = 0; i < tablero.length + 2; i++) {
+      System.out.print("0 ");
+    }
+    System.out.println();
+
+    for (int i = 0; i < tablero.length; i++) {
+      System.out.print("0 ");
+      for (int j = 0; j < tablero[i].length; j++) {
+        System.out.print(tablero[i][j]+ " ");
+      }
+      System.out.println("0");
+    }
+
+    for (int i = 0; i < tablero.length + 2; i++) {
+      System.out.print("0 ");
+    }
+    System.out.println();
+  }
+
+  private static boolean posicionValida(int posicionI, int posicionJ) {
+
+    if(posicionI<6 && posicionI >=0&&posicionJ >=0&& posicionJ<6) {
+      return true;
+    }else {
+      return false;
+    }
+
+
+  }
+  private static void emplazarJugadores(char[][] tablero) {
+    tablero[0][0] = JEDI;
+    tablero[0][TAMANO-1] = SIDIOUS;
+    tablero[TAMANO-1][0] = VADER;
+    tablero[TAMANO-1][TAMANO-1] = MAUL;
+  }
+
+  private static void inicializarTablero(char[][] tablero) {
+    for (int i = 0; i < tablero.length; i++) {
+      for (int j = 0; j < tablero[i].length; j++) {
+        tablero[i][j] = VACIO;
+      }
+    }
+  }
+
+
+
+  private static void jugadaJedi(char[][] tablero, char movimiento) {
+
+
+    int x=0, y=0;
+
+    for (int i = 0; i < tablero.length; i++) {
+      for (int j = 0; j < tablero.length; j++) {
+        if((tablero[i][j] == JEDI)) {
+
+          tablero[i][j] = VACIO;
+
+          x=i;
+          y=j;
+        }
+      }
+    }
+    switch(movimiento) {
+
+      case 'a':
+
+        if(posicionValida(x,y) ==true&& y!=0) {
+          y--;
+          tablero[x][y]=JEDI;
+          if((hayEnemigo(tablero,MAUL,x,y)==true)||hayEnemigo(tablero,VADER,x,y) ==true||hayEnemigo(tablero,SIDIOUS,x,y )==true){
+
+            tablero[x][y]=VACIO;
+          }
+        }else {
+          tablero[x][y]=JEDI;
+        }
+        break;
+
+      case 's':
+
+        if(posicionValida(x,y) ==true&&x!=5) {
+          x++;
+          tablero[x][y]=JEDI;
+          if((hayEnemigo(tablero,MAUL,x,y)==true)||hayEnemigo(tablero,VADER,x,y) ==true||hayEnemigo(tablero,SIDIOUS,x,y )==true){
+
+            tablero[x][y]=JEDI;
+          }
+        }else {
+          tablero[x][y]=JEDI;
+        }
+
+
+        break;
+      case 'd':
+
+        if(posicionValida(x,y) ==true &&y!=5) {
+          y++;
+          tablero[x][y]=JEDI;
+          if((hayEnemigo(tablero,MAUL,x,y)==true)||hayEnemigo(tablero,VADER,x,y) ==true||hayEnemigo(tablero,SIDIOUS,x,y )==true){
+
+            tablero[x][y]=JEDI;
+          }
+        }else {
+          tablero[x][y]=JEDI;
+        }
+
+
+        break;
+      case 'w':
+
+
+
+        if(posicionValida(x,y) ==true&&x!=0) {
+          x--;
+          tablero[x][y]=JEDI;
+          if((hayEnemigo(tablero,MAUL,x,y)==true)||hayEnemigo(tablero,VADER,x,y) ==true||hayEnemigo(tablero,SIDIOUS,x,y )==true){
+
+            tablero[x][y]=JEDI;
+          }
+        }else {
+          tablero[x][y]=JEDI;
+        }
+
+        break;
+      default:
+        System.out.println("no he introducido la tecla correcta");
+    }
+
+  }
+}
